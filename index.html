@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reminders Clone</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <style>
+        /* Box sizing reset */
+        html {
+            box-sizing: border-box;
+        }
+
+        *,
+        *:before,
+        *:after {
+            box-sizing: inherit;
+        }
+
+        /* Center main container + add styling */
+        .center {
+            width: 300px;
+            margin: 50px auto 0px;
+        }
+
+        .delete {
+            color: red;
+            float: right;
+            cursor: pointer;
+        }
+
+        /* Expands the elements to fill the container width even when 
+           the default font size is changed. There's probably a better
+           way to do that */
+        #toDo {
+            width: 78%;
+        }
+
+        #adToDo {
+            width: 20%;
+            margin-left: 6px;
+        }
+
+        #toDoContainer {
+            margin: 0px;
+            padding: 0px;
+            font-size: 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="toDoList" class="center">
+        <div id="toDoContainer">
+            <input type="text" id="toDo" placeholder="Type your to do" maxlength="40">
+            <button id="adToDo" onclick="addToDo()">Add</button>
+        </div>
+        <div>&nbsp;</div>
+        <div>
+            <input type="checkbox" id="item1" checked>
+            <label for="item1">Build protoype</label>
+            <span class="delete">x</span>
+        </div>
+        <div>
+            <input type="checkbox" id="item2">
+            <label for="item2">...?</label>
+            <span class="delete">x</span>
+        </div>
+        <div>
+            <input type="checkbox" id="item3">
+            <label for="item3">Profit</label>
+            <span class="delete">x</span>
+        </div>
+    </div>
+    <script>
+        var itemCounter = document.querySelectorAll("input[type=checkbox]").length;
+        // Add item on pressing enter when text input is on focus
+        document.getElementById("toDo").onkeyup = (function (event) {
+            if (event.keyCode === 13) {
+                addToDo();
+            }
+        });
+        // Check/uncheck by pressing enter while checkbox is on focus
+        document.getElementById("toDoList").onkeyup = (function (event) {
+            if (event.keyCode === 13
+                && document.activeElement.tagName == "INPUT"
+                && document.activeElement.getAttribute("type") == "checkbox") {
+                document.activeElement.checked = !document.activeElement.checked;
+            }
+        });
+        // Ctrl+N focuses the add item input
+        document.onkeyup = (function (event) {
+
+            if (event.ctrlKey && event.keyCode === 78) {
+                console.log("HA");
+                document.getElementById("toDo").focus();
+            }
+        });
+        Array.from(document.getElementsByClassName("delete")).forEach(
+            function (element, index, array) {
+                element.addEventListener("click", deleteItem);
+            }
+        );
+
+        function deleteItem(event) {
+            event.target.parentNode.remove();
+        }
+
+        function addToDo() {
+            var todo = document.getElementById("toDo").value;
+            if (todo.trim() === '') return;
+
+            itemCounter += 1;
+            document.getElementById("toDo").value = '';
+            var input = document.createElement("input");
+            input.setAttribute("type", "checkbox");
+            input.setAttribute("id", "item" + itemCounter);
+            var label = document.createElement("label");
+            label.setAttribute("for", "item" + itemCounter);
+            label.textContent = todo;
+            var close = document.createElement("span");
+            close.setAttribute("class", "delete");
+            close.addEventListener("click", deleteItem);
+            close.textContent = 'x';
+            var div = document.createElement("div");
+            div.appendChild(input);
+            div.appendChild(document.createTextNode("\n"));
+            div.appendChild(label);
+            div.appendChild(close);
+            document.getElementById("toDoList").appendChild(div);
+        }
+    </script>
+</body>
+
+</html>
